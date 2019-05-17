@@ -15,7 +15,7 @@ def get_cities(html):
     cities = soup.find('select', class_='js-custom-select i-select').find_all('option')
     dt =[]
     for item in cities:
-        dt.append((item.text,int(item.attrs['data-id'])))
+        dt.append((item.text, int(item.get('data-id'))))
     return print(dt)
 
 def main():
