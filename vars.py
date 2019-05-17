@@ -1,3 +1,3 @@
 # coding=utf-8
 
-url: str = 'https://www.servplus.ru/service/'
+url = 'https://www.servplus.ru/service/'
