@@ -5,9 +5,9 @@ import csv
 from pprint import pprint as pp
 
 url = 'https://www.servplus.ru/service/'
-ur = 'https://www.servplus.ru/ajax/service.map/getElements.php?SECTION_ID=49&PARTNER_TYPE=service_center'
-# base_url = 'https://www.servplus.ru/ajax/service.map/getElements.php?SECTION_ID='
-# partner = '&PARTNER_TYPE=service_center'
+# ur = 'https://www.servplus.ru/ajax/service.map/getElements.php?SECTION_ID=49&PARTNER_TYPE=service_center'
+base_url = 'https://www.servplus.ru/ajax/service.map/getElements.php?SECTION_ID='
+partner = '&PARTNER_TYPE=service_center'
 
 
 
