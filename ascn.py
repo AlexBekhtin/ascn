@@ -31,8 +31,16 @@ def get_cities(html):
 # <p><a href="http://"></a></p>
 # </li>
 # </body></html>
+def write_csv_header(field_names,file_name):
+    with open(file_name, 'a', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=field_names)
+        writer.writeheader()
+
+
 
 def get_data(data):
+    field_names = ['city','city_id','coord','m_name','m_status','phone','mail','link','data_id']
+    write_csv_header(field_names,'ascn.csv')
     for item in data:
         html = get_html(item[2])
         soup = bs(html,'lxml')
@@ -47,7 +55,7 @@ def get_data(data):
             except:
                 city_id = ''
             try:
-                coord = li.find('li').get('data-coord')
+                coord = li.get('data-coord')
             except:
                 coord = ''
             try:
@@ -55,7 +63,11 @@ def get_data(data):
             except:
                 m_name = ''
             try:
-                phone = soup.find('div', class_='m-status').find_next().text
+                m_status = li.find('div', class_='m-status').text
+            except:
+                m_status = ''
+            try:
+                phone = li.find('div', class_='m-status').find_next().text
             except:
                 phone = ''
             try:
@@ -67,31 +79,35 @@ def get_data(data):
             except:
                 link = ''
             try:
-                data_id = li.find('li').get('data-id')
+                data_id = li.get('data-id')
             except:
                 data_id = ''
-            data ={'city':city,
+            row ={'city':city,
                    'city_id':city_id,
                    'coord':coord,
                    'm_name':m_name,
+                   'm_status':m_status,
                    'phone':phone,
                    'mail':mail,
                    'link':link,
                    'data_id':data_id}
-            write_csv(data,'ascn.csv')
+            write_csv(row,'ascn.csv')
 
 
 def write_csv(line,file_name):
-    with open(file_name, mode='a') as f:
-        writer = csv.writer(f)
-        writer.writerow((line['city'],
-                         line['city_id'],
-                         line['coord'],
-                         line['m_name'],
-                         line['phone'],
-                         line['mail'],
-                         line['link'],
-                         line['data_id']))
+    field_names = line.keys()
+    with open(file_name, 'a', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=field_names)
+        writer.writerow(line)
+        # writer.writerow((line['city'],
+        #                  line['city_id'],
+        #                  line['coord'],
+        #                  line['m_name'],
+        #                  line['m_status'],
+        #                  line['phone'],
+        #                  line['mail'],
+        #                  line['link'],
+        #                  line['data_id']))
 
 
 def main():
