@@ -36,47 +36,49 @@ def get_data(data):
     for item in data:
         html = get_html(item[2])
         soup = bs(html,'lxml')
-        try:
-            city = item[0]
-        except:
-            city = ''
-        try:
-            city_id = item[1]
-        except:
-            city_id = ''
-        try:
-            coord = soup.find('li').get('data-coord')
-        except:
-            coord = ''
-        try:
-            m_name = soup.find('div', class_='m-name').text
-        except:
-            m_name = ''
-        try:
-            phone = soup.find('div', class_='m-status').find_next().text
-        except:
-            phone = ''
-        try:
-            mail = soup.find('a').text
-        except:
-            mail = ''
-        try:
-            link = soup.find('a').find_next().text
-        except:
-            link = ''
-        try:
-            data_id = soup.find('li').get('data-id')
-        except:
-            data_id = ''
-        data ={'city':city,
-               'city_id':city_id,
-               'coord':coord,
-               'm_name':m_name,
-               'phone':phone,
-               'mail':mail,
-               'link':link,
-               'data_id':data_id}
-        write_csv(data,'ascn.csv')
+        lis =  soup.find_all('li')
+        for li in lis:
+            try:
+                city = item[0]
+            except:
+                city = ''
+            try:
+                city_id = item[1]
+            except:
+                city_id = ''
+            try:
+                coord = li.find('li').get('data-coord')
+            except:
+                coord = ''
+            try:
+                m_name = li.find('div', class_='m-name').text
+            except:
+                m_name = ''
+            try:
+                phone = soup.find('div', class_='m-status').find_next().text
+            except:
+                phone = ''
+            try:
+                mail = li.find('a').text
+            except:
+                mail = ''
+            try:
+                link = li.find('a').find_next().text
+            except:
+                link = ''
+            try:
+                data_id = li.find('li').get('data-id')
+            except:
+                data_id = ''
+            data ={'city':city,
+                   'city_id':city_id,
+                   'coord':coord,
+                   'm_name':m_name,
+                   'phone':phone,
+                   'mail':mail,
+                   'link':link,
+                   'data_id':data_id}
+            write_csv(data,'ascn.csv')
 
 
 def write_csv(line,file_name):
@@ -94,7 +96,7 @@ def write_csv(line,file_name):
 
 def main():
     cities = get_cities(get_html(url))
-    data = get_data(cities)
+    get_data(cities)
 
 
 if __name__ == '__main__':
