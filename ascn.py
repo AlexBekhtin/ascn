@@ -2,12 +2,10 @@
 import csv
 
 import requests
+from urls import *
 from bs4 import BeautifulSoup as bs
 
-url = 'https://www.servplus.ru/service/'
-# ur = 'https://www.servplus.ru/ajax/service.map/getElements.php?SECTION_ID=49&PARTNER_TYPE=service_center'
-base_url = 'https://www.servplus.ru/ajax/service.map/getElements.php?SECTION_ID='
-partner = '&PARTNER_TYPE=service_center'
+
 
 
 def get_html(url):
