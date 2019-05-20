@@ -1,14 +1,13 @@
 # coding=utf-8
+import csv
+
 import requests
 from bs4 import BeautifulSoup as bs
-import csv
-from pprint import pprint as pp
 
 url = 'https://www.servplus.ru/service/'
 # ur = 'https://www.servplus.ru/ajax/service.map/getElements.php?SECTION_ID=49&PARTNER_TYPE=service_center'
 base_url = 'https://www.servplus.ru/ajax/service.map/getElements.php?SECTION_ID='
 partner = '&PARTNER_TYPE=service_center'
-
 
 
 def get_html(url):
@@ -31,16 +30,10 @@ def get_cities(html):
 # <p><a href="http://"></a></p>
 # </li>
 # </body></html>
-def write_csv_header(field_names,file_name):
-    with open(file_name, 'a', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=field_names)
-        writer.writeheader()
-
 
 
 def get_data(data):
-    field_names = ['city','city_id','coord','m_name','m_status','phone','mail','link','data_id']
-    write_csv_header(field_names,'ascn.csv')
+    data_csv = []
     for item in data:
         html = get_html(item[2])
         soup = bs(html,'lxml')
@@ -91,28 +84,24 @@ def get_data(data):
                    'mail':mail,
                    'link':link,
                    'data_id':data_id}
-            write_csv(row,'ascn.csv')
+            data_csv.append(row)
+    return data_csv
 
 
-def write_csv(line,file_name):
-    field_names = line.keys()
+def write_csv(data,file_name):
+    field_names = data[0].keys()
     with open(file_name, 'a', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=field_names)
-        writer.writerow(line)
-        # writer.writerow((line['city'],
-        #                  line['city_id'],
-        #                  line['coord'],
-        #                  line['m_name'],
-        #                  line['m_status'],
-        #                  line['phone'],
-        #                  line['mail'],
-        #                  line['link'],
-        #                  line['data_id']))
+        writer.writeheader()
+        for line in data:
+            writer.writerow(line)
+
 
 
 def main():
     cities = get_cities(get_html(url))
-    get_data(cities)
+    data = get_data(cities)
+    write_csv(data,'ascn_partners.csv')
 
 
 if __name__ == '__main__':
