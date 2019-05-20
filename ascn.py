@@ -2,23 +2,23 @@
 import csv
 
 import requests
+from bs4 import BeautifulSoup
 from urls import *
-from bs4 import BeautifulSoup as bs
-
-
 
 
 def get_html(url):
     r = requests.get(url)
     return r.text
 
+
 def get_cities(html):
-    soup = bs(html,'lxml')
+    soup = BeautifulSoup(html, 'lxml')
     cities = soup.find('select', class_='js-custom-select i-select').find_all('option')
-    data =[]
+    data = []
     for item in cities:
-        data.append((item.text, int(item.get('data-id')),f"{base_url}{item.get('data-id')}{partner}"))
+        data.append((item.text, int(item.get('data-id')), f"{base_url}{item.get('data-id')}{partner}"))
     return data
+
 
 # <html><body><li data-baloon="Зарипов Фанис Газизович" data-coord="54.899984580316,52.294586579101" data-id="259">
 # <div class="m-name">Зарипов Фанис Газизович (АСЦН)</div>
@@ -34,8 +34,8 @@ def get_data(data):
     data_csv = []
     for item in data:
         html = get_html(item[2])
-        soup = bs(html,'lxml')
-        lis =  soup.find_all('li')
+        soup = BeautifulSoup(html, 'lxml')
+        lis = soup.find_all('li')
         for li in lis:
             try:
                 city = item[0]
@@ -73,20 +73,20 @@ def get_data(data):
                 data_id = li.get('data-id')
             except:
                 data_id = ''
-            row ={'city':city,
-                   'city_id':city_id,
-                   'coord':coord,
-                   'm_name':m_name,
-                   'm_status':m_status,
-                   'phone':phone,
-                   'mail':mail,
-                   'link':link,
-                   'data_id':data_id}
+            row = {'city': city,
+                   'city_id': city_id,
+                   'coord': coord,
+                   'm_name': m_name,
+                   'm_status': m_status,
+                   'phone': phone,
+                   'mail': mail,
+                   'link': link,
+                   'data_id': data_id}
             data_csv.append(row)
     return data_csv
 
 
-def write_csv(data,file_name):
+def write_csv(data, file_name):
     field_names = data[0].keys()
     with open(file_name, 'a', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=field_names)
@@ -95,11 +95,10 @@ def write_csv(data,file_name):
             writer.writerow(line)
 
 
-
 def main():
     cities = get_cities(get_html(url))
     data = get_data(cities)
-    write_csv(data,'ascn_partners.csv')
+    write_csv(data, 'ascn_partners.csv')
 
 
 if __name__ == '__main__':
